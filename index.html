@@ -12,15 +12,16 @@
    文字の大きさは :root の --base で一括して変えられます
    ========================================================= */
 :root {
-  --base: 18px;              /* 基本の文字の大きさ */
+  --base: 112.5%;           /* 基本の文字の大きさ（ブラウザ標準の1.125倍＝約18px。利用者の文字サイズ設定にも連動） */
   --bg: #f5f3ee;             /* ページの背景（落ち着いた生成り色） */
   --panel: #ffffff;          /* パネルの背景 */
   --ink: #1f2a30;            /* 文字の色 */
   --muted: #5a6670;          /* 薄い文字の色 */
-  --line: #d9d4c9;           /* 枝線 */
+  --line: #cfc9bd;           /* 枝線 */
+  --line-strong: #9a948a;    /* 入力欄・ボタンの枠線 */
   --accent: #2b6e76;         /* クリニックらしい落ち着いた青緑 */
   --accent-soft: #e2f0f1;
-  --focus: #c98a1b;          /* キーボード操作時の枠 */
+  --focus: #8a5a00;          /* キーボード操作時の枠 */
 
   /* 印の色（色だけに頼らず、記号と文字でもわかるようにしています） */
   --best-bg: #e3f1e5;  --best-fg: #1e6b2e;  --best-line: #7fb588;   /* ◎ */
@@ -34,6 +35,7 @@
 html { font-size: var(--base); -webkit-text-size-adjust: 100%; }
 body {
   margin: 0;
+  padding-bottom: 90px;   /* 右下の「上へ」ボタンが内容に重ならないように */
   background: var(--bg);
   color: var(--ink);
   font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic UI", "Yu Gothic", "Meiryo", "Noto Sans JP", "BIZ UDPGothic", sans-serif;
@@ -44,7 +46,7 @@ body {
 a { color: var(--accent); }
 button, input, select { font: inherit; color: inherit; }
 button { cursor: pointer; }
-:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; box-shadow: 0 0 0 6px #fff; }
 .visually-hidden {
   position: absolute !important; width: 1px; height: 1px; overflow: hidden;
   clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
@@ -137,7 +139,7 @@ button { cursor: pointer; }
 .search-box { position: relative; flex: 1 1 280px; }
 .search-box input[type="search"] {
   width: 100%; min-height: 52px; padding: 10px 48px 10px 14px;
-  border: 2px solid var(--line); border-radius: 12px; background: #fff; font-size: 1.05rem;
+  border: 2px solid var(--line-strong); border-radius: 12px; background: #fff; font-size: 1.05rem;
 }
 .search-box input[type="search"]:focus { border-color: var(--accent); }
 .search-box .clear {
@@ -150,7 +152,7 @@ button { cursor: pointer; }
 .btn-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
 .btn {
   min-height: 44px; padding: 8px 14px; border-radius: 10px;
-  border: 2px solid var(--line); background: #fafaf7; font-weight: 600;
+  border: 2px solid var(--line-strong); background: #fafaf7; font-weight: 600;
 }
 .btn:hover { border-color: #b8b2a5; }
 .btn[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
@@ -159,7 +161,7 @@ button { cursor: pointer; }
 .seg { display: inline-flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
 .seg label {
   display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 8px 14px;
-  border: 2px solid var(--line); border-radius: 10px; background: #fafaf7; font-weight: 600; cursor: pointer;
+  border: 2px solid var(--line-strong); border-radius: 10px; background: #fafaf7; font-weight: 600; cursor: pointer;
 }
 .seg input { width: 20px; height: 20px; margin: 0; accent-color: var(--accent); }
 .seg label:has(input:checked), .seg label.on { background: var(--accent-soft); border-color: var(--accent); color: #17464b; }
@@ -236,6 +238,8 @@ button { cursor: pointer; }
 }
 .alt-plain { border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px; }
 .note { margin: 2px 0 0; font-size: 0.92rem; color: var(--muted); }
+.note summary { cursor: pointer; color: var(--accent); text-decoration: underline; }
+.note[open] summary { margin-bottom: 4px; }
 .empty {
   grid-column: 1 / -1; text-align: center; padding: 40px 16px; color: var(--muted);
   background: var(--panel); border: 1px dashed var(--line); border-radius: 14px;
@@ -295,11 +299,11 @@ button { cursor: pointer; }
 
     <div class="kidney-row">
       <label class="chip">
-        <input type="checkbox" id="kidney">
+        <input type="checkbox" id="kidney" aria-describedby="kidney-info">
         腎臓の病気がある・透析中
       </label>
       <div class="kidney-info" id="kidney-info" hidden>
-        チェック中：たんぱく質・カリウムの多い食品に「医師の指示に従ってください」の注意が付き、低アルブミン血症の ◎（たんぱく質をとる）は表示されません。腎臓の病気の食事は、このガイドの印より医師・管理栄養士の指示が優先です。
+        チェック中：たんぱく質・カリウムの多い食品に「医師の指示に従ってください」の注意が付き、低アルブミン血症の ◎（たんぱく質をとる）は「— 医師の指示に従う」に置きかわります。腎臓の病気の食事は、このガイドの印より医師・管理栄養士の指示が優先です。
       </div>
     </div>
 
@@ -328,10 +332,10 @@ button { cursor: pointer; }
 
     <div class="result-line">
       <span class="count" id="count" aria-live="polite"></span>
-      <button type="button" class="btn btn-reset" id="reset">条件をクリア</button>
+      <button type="button" class="btn btn-reset" id="reset">条件をクリア（病名も戻す）</button>
     </div>
 
-    <div class="legend" aria-label="印の意味" id="legend"></div>
+    <div class="legend" role="list" aria-label="印の意味" id="legend"></div>
   </section>
 
   <!-- 食品カード -->
@@ -357,6 +361,16 @@ button { cursor: pointer; }
 <button type="button" class="to-top" id="to-top" aria-label="ページの上へ戻る">上へ</button>
 
 <script>
+/* 食品データの書き間違い（カンマや引用符の閉じ忘れなど）でプログラムが止まったときの案内。ここは触らない */
+window.addEventListener("error", function (e) {
+  var box = document.getElementById("data-warn");
+  if (!box) return;
+  box.hidden = false;
+  box.innerHTML = "<b>プログラムが途中で止まりました。食品データの書き方（カンマや引用符の閉じ忘れ、[ ] の抜けなど）を確かめてください。</b><br>" +
+    "場所の目安：index.html の " + (e.lineno || "?") + " 行目付近　内容：" + String(e.message || "").replace(/</g, "&lt;");
+});
+</script>
+<script>
 /* =========================================================
    ■ 設定（ここを書きかえると画面に反映されます）
    ========================================================= */
@@ -369,6 +383,8 @@ const 確認状況 = "医師・管理栄養士確認：未";   // 確認がす�
    ・病名の欄は「印 理由」の形。印は ◎ ○ △ × のどれか1文字、そのあとに空白、理由（40字くらいまで）。
    ・"数字" はおおよその値。わからないものは書かなくてよい（その行を消す）。
      プリン体だけは100gあたり、それ以外は1回量あたりです。
+   ・"分類" は次の12種類のどれか（一字一句そのまま）：
+     主食／肉／魚／卵・乳製品／大豆製品／野菜／果物／汁物・麺類／菓子・甘い飲み物／お酒／調味料／外食・コンビニ
    ・"腎注意" は "" / "たんぱく質" / "カリウム" / "たんぱく質・カリウム" のどれか。
    ・"かわりに" には、この表にある食品の名前をそのまま書く（画面でつながります）。
    ・食品を足すときは、どこかのかたまりをコピーして書きかえるのがいちばん簡単です。
@@ -2373,6 +2389,9 @@ const 病名一覧 = [
   }
 ];
 
+/* 分類の一覧（画面のボタンの順番。食品データの "分類" はこの中から選ぶ） */
+const 分類の一覧 = ["主食", "肉", "魚", "卵・乳製品", "大豆製品", "野菜", "果物", "汁物・麺類", "菓子・甘い飲み物", "お酒", "調味料", "外食・コンビニ"];
+
 /* 印の意味・見た目 */
 const 印の意味 = { "◎": "おすすめ", "○": "ふつうに食べてよい", "△": "量や回数に注意", "×": "なるべく控える", "—": "医師の指示に従う", "？": "未記入" };
 const 印のクラス = { "◎": "m-best", "○": "m-ok", "△": "m-care", "×": "m-avoid", "—": "m-none", "？": "m-none" };
@@ -2433,12 +2452,22 @@ const 腎の数字 = ["たんぱく質g", "カリウムmg"];
 
   /* --- データの下ごしらえと点検 --- */
   const 名前一覧 = new Set(食品データ.map((f) => f["名前"]));
+  const 数字のキー = new Set(数字の表示.map((x) => x[0]));
   const 不備 = [];
+  const 見た名前 = new Set();
   食品データ.forEach((f, i) => {
     const 名 = f["名前"] || `(${i + 1}番目の食品)`;
     if (!f["名前"]) 不備.push(`${i + 1}番目の食品に「名前」がありません`);
+    else if (見た名前.has(f["名前"])) 不備.push(`「${名}」が2回以上あります（名前は1つずつ別にしてください）`);
+    見た名前.add(f["名前"]);
     if (!f["よみ"]) 不備.push(`「${名}」に「よみ」がありません`);
     if (!f["分類"]) 不備.push(`「${名}」に「分類」がありません`);
+    else if (!分類の一覧.includes(f["分類"])) 不備.push(`「${名}」の「分類」が決まった分類名ではありません：${f["分類"]}（${分類の一覧.join("／")} のどれかに）`);
+    if (f["別名"] != null && !Array.isArray(f["別名"])) { 不備.push(`「${名}」の「別名」は [ ] で囲んだ一覧にしてください`); f["別名"] = []; }
+    if (f["かわりに"] != null && !Array.isArray(f["かわりに"])) { 不備.push(`「${名}」の「かわりに」は [ ] で囲んだ一覧にしてください`); f["かわりに"] = []; }
+    Object.keys(f["数字"] || {}).forEach((k) => {
+      if (!数字のキー.has(k)) 不備.push(`「${名}」の「数字」のキー「${k}」は使えません（${[...数字のキー].join("／")} のどれかに）`);
+    });
     病名一覧.forEach((d) => {
       const m = 印を分ける(f[d.key]);
       if (m.印 === "？") 不備.push(`「${名}」の「${d.key}」の印が読めません（◎ ○ △ × で始める）：${f[d.key] || "(空)"}`);
@@ -2449,7 +2478,9 @@ const 腎の数字 = ["たんぱく質g", "カリウムmg"];
     if (f["腎注意"] && !["たんぱく質", "カリウム", "たんぱく質・カリウム"].includes(f["腎注意"])) {
       不備.push(`「${名}」の「腎注意」は "" / "たんぱく質" / "カリウム" / "たんぱく質・カリウム" のどれかにしてください：${f["腎注意"]}`);
     }
-    f._検索 = 正規化([f["名前"], f["よみ"], ...(f["別名"] || []), f["分類"]].join("|"));
+    f._名前 = 正規化(f["名前"]);
+    f._よみ = 正規化(f["よみ"]);
+    f._検索 = 正規化([f["名前"], f["よみ"], ...(f["別名"] || [])].join("|"));
   });
   if (不備.length) {
     console.warn("食品データの不備：", 不備);
@@ -2458,10 +2489,10 @@ const 腎の数字 = ["たんぱく質g", "カリウムmg"];
     box.innerHTML = `<b>食品データに直したい点が ${不備.length} 件あります（画面は動きます）。</b><ul>${不備.slice(0, 20).map((x) => `<li>${esc(x)}</li>`).join("")}${不備.length > 20 ? "<li>…ほか</li>" : ""}</ul>`;
   }
 
-  const 分類一覧 = [...new Set(食品データ.map((f) => f["分類"]).filter(Boolean))];
+  const 分類一覧 = 分類の一覧.filter((c) => 食品データ.some((f) => f["分類"] === c));
 
   /* --- 画面の状態（何も保存しません。ページを閉じると消えます） --- */
-  const 状態 = { 病名: new Set(), 腎: false, 検索: "", 分類: null, 表示: "all" };
+  const 状態 = { 病名: new Set(), 腎: false, 検索: "", 完全一致: null, 分類: null, 表示: "all" };
 
   /* --- 病名チップ --- */
   const chips = $("#disease-chips");
@@ -2484,8 +2515,15 @@ const 腎の数字 = ["たんぱく質g", "カリウムmg"];
 
   /* --- 検索 --- */
   const q = $("#q");
-  q.addEventListener("input", () => { 状態.検索 = q.value; 描画(); });
-  $("#q-clear").addEventListener("click", () => { q.value = ""; 状態.検索 = ""; 描画(); q.focus(); });
+  let 入力待ち = null;
+  function クリアボタンの表示() { $("#q-clear").hidden = !q.value; }
+  q.addEventListener("input", () => {
+    状態.検索 = q.value; 状態.完全一致 = null; クリアボタンの表示();
+    clearTimeout(入力待ち);
+    入力待ち = setTimeout(描画, 120);   // 1文字ごとに描き直さず、少し待ってから描く
+  });
+  $("#q-clear").addEventListener("click", () => { q.value = ""; 状態.検索 = ""; 状態.完全一致 = null; クリアボタンの表示(); 描画(); q.focus(); });
+  クリアボタンの表示();
 
   /* --- 分類ボタン --- */
   const catBox = $("#cat-buttons");
@@ -2509,7 +2547,10 @@ const 腎の数字 = ["たんぱく質g", "カリウムmg"];
 
   /* --- 条件をクリア --- */
   $("#reset").addEventListener("click", () => {
-    状態.検索 = ""; q.value = "";
+    状態.検索 = ""; q.value = ""; 状態.完全一致 = null; クリアボタンの表示();
+    状態.病名.clear();
+    chips.querySelectorAll("input").forEach((x) => { x.checked = false; x.closest("label").classList.remove("on"); });
+    状態.腎 = false; $("#kidney").checked = false; $("#kidney").closest("label").classList.remove("on"); $("#kidney-info").hidden = true;
     状態.分類 = null;
     catBox.querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", String(!x.dataset.cat)));
     状態.表示 = "all"; $("#view-seg input[value=all]").checked = true; 表示ボタンの見た目();
@@ -2517,13 +2558,17 @@ const 腎の数字 = ["たんぱく質g", "カリウムmg"];
   });
 
   /* --- 凡例 --- */
-  $("#legend").innerHTML = ["◎", "○", "△", "×"].map((m) =>
-    `<span class="${印のクラス[m]}"><span class="mark-badge"><span class="sym" aria-hidden="true">${m}</span><span class="lbl">${m} ${印の意味[m]}</span></span></span>`
-  ).join("");
+  function 凡例を描く() {
+    const 印 = 状態.腎 ? ["◎", "○", "△", "×", "—"] : ["◎", "○", "△", "×"];
+    $("#legend").innerHTML = 印.map((m) =>
+      `<span class="${印のクラス[m]}" role="listitem"><span class="mark-badge"><span class="sym" aria-hidden="true">${m}</span><span class="lbl"><span class="visually-hidden">${m} </span>${印の意味[m]}</span></span></span>`
+    ).join("");
+  }
 
   /* --- フッター --- */
   $("#updated").textContent = 最終更新日;
   $("#checked-status").textContent = 確認状況;
+  $("#checked-status").classList.toggle("unchecked", /未/.test(確認状況));
   $("#total").textContent = 食品データ.length;
 
   /* --- 上へ戻る --- */
@@ -2541,9 +2586,13 @@ const 腎の数字 = ["たんぱく質g", "カリウムmg"];
   }
 
   /* --- 選び方のコツ --- */
+  let コツの表示中 = "";
   function コツを描く(表示病名) {
     const tips = $("#tips");
-    if (!状態.病名.size) { tips.hidden = true; tips.innerHTML = ""; return; }
+    if (!状態.病名.size) { tips.hidden = true; tips.innerHTML = ""; コツの表示中 = ""; return; }
+    const key = 表示病名.map((d) => d.key).join("|");
+    if (key === コツの表示中) return;   // 病名が変わっていなければ作り直さない（開閉の状態を保つ）
+    コツの表示中 = key;
     tips.hidden = false;
     tips.innerHTML = 表示病名.map((d) =>
       `<details class="tip" open><summary>${esc(d.key)}の選び方のコツ</summary><ul>${d.コツ.map((t) => `<li>${esc(t)}</li>`).join("")}</ul></details>`
@@ -2596,29 +2645,40 @@ const 腎の数字 = ["たんぱく質g", "カリウムmg"];
       ${腎}
       ${数字を描く(f, 表示病名)}
       ${altHtml}
-      ${f["ひとこと"] ? `<p class="note">※ ${esc(f["ひとこと"])}</p>` : ""}
+      ${f["ひとこと"] ? (String(f["ひとこと"]).length > 90
+        ? `<details class="note"><summary>※ 補足を見る</summary>${esc(f["ひとこと"])}</details>`
+        : `<p class="note">※ ${esc(f["ひとこと"])}</p>`) : ""}
     </article>`;
   }
 
   /* --- 絞り込み --- */
   function 絞り込む(表示病名) {
     const tokens = String(状態.検索 || "").trim().split(/[\s　]+/).map(正規化).filter(Boolean);
-    return 食品データ.filter((f) => {
+    const list = 食品データ.filter((f) => {
+      if (状態.完全一致) return f["名前"] === 状態.完全一致;   // 「かわりにおすすめ」から来たときはその食品だけ
       if (状態.分類 && f["分類"] !== 状態.分類) return false;
       if (tokens.length && !tokens.every((t) => f._検索.includes(t))) return false;
       if (状態.表示 === "caution" && !表示病名.some((d) => ["△", "×"].includes(表示する印(f, d).印))) return false;
       if (状態.表示 === "good" && !表示病名.some((d) => 表示する印(f, d).印 === "◎")) return false;
       return true;
     });
+    if (!tokens.length) return list;
+    // 名前・よみがそのまま一致するものを先に、次に先頭が一致するもの、最後に別名での一致
+    const 順位 = (f) => tokens.every((t) => f._名前 === t || f._よみ === t) ? 0
+      : tokens.every((t) => f._名前.startsWith(t) || f._よみ.startsWith(t)) ? 1
+      : tokens.every((t) => f._名前.includes(t) || f._よみ.includes(t)) ? 2 : 3;
+    return list.map((f, i) => [順位(f), i, f]).sort((a, b) => a[0] - b[0] || a[1] - b[1]).map((x) => x[2]);
   }
 
   /* --- 全体の描画 --- */
   function 描画() {
     const 表示病名 = 状態.病名.size ? 病名一覧.filter((d) => 状態.病名.has(d.key)) : 病名一覧;
     コツを描く(表示病名);
+    凡例を描く();
     const list = 絞り込む(表示病名);
     const 条件 = [];
     if (状態.検索.trim()) 条件.push(`「${状態.検索.trim()}」`);
+    if (状態.腎) 条件.push("腎臓の病気・透析中");
     if (状態.分類) 条件.push(状態.分類);
     if (状態.表示 === "caution") 条件.push("△と×だけ");
     if (状態.表示 === "good") 条件.push("◎だけ");
@@ -2626,18 +2686,19 @@ const 腎の数字 = ["たんぱく質g", "カリウムmg"];
     const cards = $("#cards");
     cards.innerHTML = list.length
       ? list.map((f) => カード(f, 表示病名)).join("")
-      : `<div class="empty">見つかりませんでした。別の言い方（ひらがな・カタカナ）でさがすか、「条件をクリア」を押してください。</div>`;
+      : `<div class="empty">見つかりませんでした。別の言い方（ひらがな・カタカナ）でさがすか、検索欄の「×」や「条件をクリア」を押してください。</div>`;
   }
 
   /* 「かわりにおすすめ」を押したら、その食品をさがす */
   $("#cards").addEventListener("click", (e) => {
     const b = e.target.closest("button[data-alt]");
     if (!b) return;
-    状態.検索 = b.dataset.alt; q.value = b.dataset.alt;
+    状態.検索 = b.dataset.alt; q.value = b.dataset.alt; 状態.完全一致 = b.dataset.alt; クリアボタンの表示();
     状態.分類 = null;
     catBox.querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", String(!x.dataset.cat)));
     状態.表示 = "all"; $("#view-seg input[value=all]").checked = true; 表示ボタンの見た目();
     描画();
+    q.focus({ preventScroll: true });
     window.scrollTo({ top: $("#h-search").getBoundingClientRect().top + window.scrollY - 10, behavior: "smooth" });
   });
 
